@@ -33,6 +33,7 @@ function App() {
       const response = await restOperation.response;
       console.log('GET call succeeded: ', response);
     } catch (error) {
+      console.error(`Error: ${error}`);
       if (error instanceof ApiError) {
         if (error.response) {
           const {
