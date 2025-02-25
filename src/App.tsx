@@ -40,7 +40,7 @@ function App() {
             headers,
             body
           } = error.response;
-          console.error(`Received ${statusCode} error response with payload: ${body}`);
+          console.error(`Received ${statusCode}, headers: ${headers}, error response with payload: ${body}`);
         }
         // Handle API errors not caused by HTTP response.
       }
