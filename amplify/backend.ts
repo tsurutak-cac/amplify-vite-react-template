@@ -105,3 +105,26 @@ backend.addOutput({
     },
   },
 });
+
+const CognitoGroupPolicy = new Policy(apiStack, "CognitoGroupPolicy", {
+  statements: [
+    new PolicyStatement({
+      actions: [
+        "cognito-identity:GetCredentialsForIdentity",
+        "cognito-identity:GetId",
+        "cognito-idp:AdminGetUser",
+        "cognito-idp:AdminListGroupsForUser",
+        "sts:AssumeRole",
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults"
+      ],
+      resources: [
+        "*"
+      ],
+    }),
+  ],
+});
+
+const { groups } = backend.auth.resources
+groups["test1"].role.attachInlinePolicy(CognitoGroupPolicy);
