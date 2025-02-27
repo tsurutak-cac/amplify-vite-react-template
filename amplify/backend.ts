@@ -8,14 +8,14 @@ import {
   RestApi,
 } from "aws-cdk-lib/aws-apigateway";
 import { Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { myApiFunction } from "./functions/api-function/resource";
+import { lakeformationFunctionHandler } from "./functions/lakeformation/resource";
 import { auth } from './auth/resource';
 import { data } from './data/resource';
 
 const backend = defineBackend({
   auth,
   data,
-  myApiFunction,
+  lakeformationFunctionHandler,
 });
 
 // create a new API stack
@@ -37,7 +37,7 @@ const myRestApi = new RestApi(apiStack, "RestApi", {
 
 // create a new Lambda integration
 const lambdaIntegration = new LambdaIntegration(
-  backend.myApiFunction.resources.lambda
+  backend.lakeformationFunctionHandler.resources.lambda
 );
 
 // create a new resource path with IAM authorization
