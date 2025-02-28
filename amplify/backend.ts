@@ -106,7 +106,7 @@ backend.addOutput({
   },
 });
 
-const CognitoGroupPolicy = new Policy(apiStack, "CognitoGroupPolicy", {
+const lakeformationFunctionPolicy = new Policy(apiStack, "lakeformationFunctionPolicy", {
   statements: [
     new PolicyStatement({
       actions: [
@@ -115,9 +115,30 @@ const CognitoGroupPolicy = new Policy(apiStack, "CognitoGroupPolicy", {
         "cognito-idp:AdminGetUser",
         "cognito-idp:AdminListGroupsForUser",
         "sts:AssumeRole",
+      ],
+      resources: [
+        "*"
+      ],
+    }),
+  ],
+});
+backend.lakeformationFunctionHandler.resources.lambda.role?.attachInlinePolicy(lakeformationFunctionPolicy)
+
+const CognitoGroupPolicy = new Policy(apiStack, "CognitoGroupPolicy", {
+  statements: [
+    new PolicyStatement({
+      actions: [
         "athena:StartQueryExecution",
         "athena:GetQueryExecution",
-        "athena:GetQueryResults"
+        "athena:GetQueryResults",
+        "lakeformation:GetDataAccess",
+        "lakeformation:ListPermissions",
+        "glue:GetTable",
+        "glue:GetDatabase",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject",
       ],
       resources: [
         "*"
@@ -126,5 +147,13 @@ const CognitoGroupPolicy = new Policy(apiStack, "CognitoGroupPolicy", {
   ],
 });
 
+// MEMO: このロールをAthenaの権限制御ロールとする想定。ただし、Athenaでの権限制御のためには信頼ポリシーの追加が必要
+// {
+//   "Effect": "Allow",
+//     "Principal": {
+//     "Service": "lakeformation.amazonaws.com"
+//   },
+//   "Action": "sts:AssumeRole"
+// }
 const { groups } = backend.auth.resources
 groups["test1"].role.attachInlinePolicy(CognitoGroupPolicy);
