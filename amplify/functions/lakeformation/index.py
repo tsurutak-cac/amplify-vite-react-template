@@ -7,7 +7,7 @@ logger = Logger()
 
 @logger.inject_lambda_context(log_event=True)
 def handler(event, context):
-    # TODO: フロントエンドアプリに依り認可の実装は変化するのでスキップ
+    # TODO: フロントエンドアプリに依り認可の実装は変化するのでスキップ。event変数に含まれるトークン情報を利用
     sts_client = boto3.client('sts')
 
     # MEMO:  AssumeRoleの信頼ポリシーにアクセス元（Lambda）（arn:aws:sts::AWSアカウント:assumed-role/Lambda実行ロール/Lambda関数）への許可が必要
@@ -31,9 +31,9 @@ def handler(event, context):
     )
 
     response = athena_client.start_query_execution(
-        QueryString='SELECT * FROM dipjoin',
+        QueryString='SELECT * FROM sales_csv',
         QueryExecutionContext={
-            'Database': 'dip'
+            'Database': 'kawarui_test6'
         },
         ResultConfiguration={
             'OutputLocation': 's3://dip2025/dbt/athena_query_result/'
